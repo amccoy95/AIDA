@@ -2,6 +2,7 @@ const { promisify } = require('util')
 const express = require('express')
 var bodyParser = require('body-parser')
 const fs = require('fs')
+var path = require('path');
 
 // Check for images in the directory and update the images.json file
 async function checkForImages () {
@@ -12,16 +13,19 @@ async function checkForImages () {
 }
 
 async function findImages () {
-  const dirPath = 'data/images'
-  const images = []
-
+  //const dirPath = 'data/images'
+  const dirPath = path.join(__dirname, 'data/images')
+  //console.log(dirPath)
+  const images = []  
   const readdir = promisify(fs.readdir)
   const stat = promisify(fs.stat)
 
   try {
     const files = await readdir(dirPath)
+    
     for (const file of files) {
       const fileStats = await stat(dirPath + '/' + file)
+      
       // Exclude hidden and directories
       if (file[0] !== '.' && !fileStats.isDirectory()) {
         images.push(file)
